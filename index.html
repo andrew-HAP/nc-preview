@@ -72,6 +72,8 @@
   <p class="legal">Happy Days Agency Limited. Registered in England and Wales, company number 17268033. Registered office: Handel House, 95 High Street, Edgware, Middlesex, HA8 7DB.</p>
 </div>
 <script>
+function ncDevice(){var u=navigator.userAgent||"";var os=/iPhone|iPad|iPod/.test(u)?"iOS":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":"other";var kind=/iPad|Tablet/.test(u)?"tablet":/Mobi|iPhone|Android/.test(u)?"phone":"computer";return kind+" ("+os+")";}
+function ncLog(copy,event,page){try{var b=new URLSearchParams();b.append("entry.1754898576",copy||"");b.append("entry.2035917961",event||"");b.append("entry.1365262785",page||"");b.append("entry.335659927",ncDevice());fetch("https://docs.google.com/forms/d/e/1FAIpQLSf7YbOQu9mHzuiNz7ire6osZ7piU9cofqfmHY26vCPg8pCOzQ/formResponse",{method:"POST",mode:"no-cors",keepalive:true,body:b}).catch(function(){});}catch(e){}}
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var copy = (new URLSearchParams(location.search).get('c') || '').replace(/[^A-Za-z0-9-]/g, '');
@@ -89,6 +91,7 @@
     try { gz = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(D.i) }, k, b64(D.c)); } catch (e) { throw new Error('code'); }
     var html = await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
     try { sessionStorage.setItem(key, code); } catch (e) {}
+    ncLog(copy, 'code accepted', '');
     document.open(); document.write(html); document.close();
   }
 
@@ -98,6 +101,7 @@
     return r.json();
   }).then(function (d) {
     D = d;
+    ncLog(copy, 'link opened', '');
     if (d.v === 'general') { $('termsNoot').hidden = true; $('termsGeneral').hidden = false; }
     [].forEach.call(document.querySelectorAll('.exp'), function (e) { e.textContent = d.xt; });
     [].forEach.call(document.querySelectorAll('.copy'), function (e) { e.textContent = copy; });
@@ -116,11 +120,12 @@
   $('terms').addEventListener('submit', function (e) {
     e.preventDefault(); if (!$('agree').checked) return;
     $('terms').hidden = true; $('unlock').hidden = false; $('pw').focus();
+    ncLog(copy, 'terms accepted', '');
   });
   $('unlock').addEventListener('submit', async function (e) {
     e.preventDefault(); $('msg').textContent = ''; $('go').disabled = true; $('go').textContent = 'Opening...';
     try { await unlock(norm($('pw').value)); }
-    catch (err) { $('msg').textContent = err.message === 'code' ? "That code didn't work. Please try again." : 'Could not open the preview. Please try again.'; $('go').disabled = false; $('go').textContent = 'Open the preview'; }
+    catch (err) { if (err.message === 'code') ncLog(copy, 'wrong code', ''); $('msg').textContent = err.message === 'code' ? "That code didn't work. Please try again." : 'Could not open the preview. Please try again.'; $('go').disabled = false; $('go').textContent = 'Open the preview'; }
   });
 })();
 </script>
