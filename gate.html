@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Confidential preview</title>
+<style>
+  @font-face { font-family: "Optician Sans"; src: url("data:font/woff2;base64,__OPTICIAN_WOFF2__") format("woff2"); font-display: swap; }
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px;
+         background: #0F1729; color: #F1F1F2; font: 15px/1.6 "Courier New", Courier, monospace;
+         -webkit-user-select: none; user-select: none; }
+  .card { width: 100%; max-width: 560px; background: #20283C; border-radius: 16px; padding: 28px 24px; }
+  .mark { font: 13px/1 "Optician Sans", Arial, sans-serif; letter-spacing: .42em; color: #94A3B8; margin: 0 0 18px; }
+  h1 { font: 22px/1.25 "Optician Sans", Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 14px; }
+  ol { margin: 0 0 18px; padding-left: 22px; } li { margin: 0 0 10px; }
+  .muted { color: #94A3B8; font-size: 14px; }
+  label.check { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0 4px; cursor: pointer; }
+  label.check input { width: 22px; height: 22px; margin: 2px 0 0; accent-color: #ED541D; flex: none; }
+  label.field { display: block; font-weight: 700; margin: 0 0 6px; }
+  input.code { width: 100%; font: 17px "Courier New", Courier, monospace; padding: 12px 14px; color: #F1F1F2; background: #111728;
+               border: 1.5px solid #565D69; border-radius: 10px; -webkit-user-select: text; user-select: text; }
+  input.code:focus { outline: 2px solid #ED541D; outline-offset: 1px; border-color: transparent; }
+  button { margin-top: 16px; width: 100%; font: 700 16px "Courier New", Courier, monospace; padding: 14px; border: 0;
+           border-radius: 999px; background: #ED541D; color: #0F1729; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; }
+  #msg { min-height: 22px; margin: 12px 0 0; color: #FF8833; }
+  .legal { margin: 22px 0 0; padding-top: 14px; border-top: 1px solid #565D69; color: #94A3B8; font-size: 12px; line-height: 1.5; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="card">
+  <p class="mark">HAPPY DAYS</p>
+  <div id="info"><h1>Confidential preview</h1><p id="infoText" class="muted">Loading...</p></div>
+
+  <form id="terms" hidden>
+    <h1>Confidential preview</h1>
+    <p class="muted">Before anything else, please read and accept these terms.</p>
+    <ol id="termsNoot">
+      <li><strong>Confidential.</strong> You will show this preview only to the Noot team members working with Happy Days on it, and keep any access details private.</li>
+      <li><strong>No copying.</strong> You will not copy, record, download, scrape or reproduce any part of it, or share it with anyone outside Noot, including other agencies and suppliers. You may take notes and discuss it inside Noot.</li>
+      <li><strong>No reverse engineering.</strong> You will not reverse engineer it, or use it or what you learn from it to build, or brief anyone to build, a similar tool. You will not put it into any AI or analysis tool.</li>
+      <li><strong>Ownership.</strong> All rights in it belong to Happy Days Agency Limited: its design, structure, code, method, data models and words. Noot's own brand, images and information stay Noot's. Some figures come from a data partner and are confidential, so you may view them but not reuse them.</li>
+      <li><strong>Illustrative.</strong> It uses illustrative figures, not Noot's numbers. It gives you no licence beyond viewing it.</li>
+      <li><strong>Expiry.</strong> It stops working on <span class="exp"></span>. Delete it then, or sooner if Happy Days asks.</li>
+    </ol>
+    <ol id="termsGeneral" hidden>
+      <li><strong>Confidential.</strong> You will show this preview only to your own team, and keep any access details private.</li>
+      <li><strong>No copying.</strong> You will not copy, record, download, scrape or reproduce any part of it, or share it with anyone outside your organisation. You may take notes and discuss it inside your team.</li>
+      <li><strong>No reverse engineering.</strong> You will not reverse engineer it, or use it or what you learn from it to build, or brief anyone to build, a similar tool. You will not put it into any AI or analysis tool.</li>
+      <li><strong>Ownership.</strong> All rights in it belong to Happy Days Agency Limited: its design, structure, code, method, data models and words. The Noot brand and images belong to Noot and appear as an example only.</li>
+      <li><strong>Illustrative.</strong> It uses an example brand and illustrative figures, not real results. It gives you no licence beyond viewing it.</li>
+      <li><strong>Expiry.</strong> It stops working on <span class="exp"></span>. Delete it then, or sooner if Happy Days asks.</li>
+    </ol>
+    <label class="check"><input type="checkbox" id="agree"> <span>I have read and accept these terms.</span></label>
+    <button id="accept" type="submit" disabled>Continue</button>
+  </form>
+
+  <form id="unlock" hidden autocomplete="off">
+    <h1>Enter your access code</h1>
+    <p class="muted">Copy <span class="copy"></span>. Works until <span class="exp"></span>.</p>
+    <label class="field" for="pw">Access code</label>
+    <input class="code" id="pw" type="password" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" required>
+    <label class="check"><input type="checkbox" id="show"> <span>Show the code as I type</span></label>
+    <button id="go" type="submit">Open the preview</button>
+    <p id="msg" role="alert"></p>
+  </form>
+  <p class="legal">Happy Days Agency Limited. Registered in England and Wales, company number 17268033. Registered office: Handel House, 95 High Street, Edgware, Middlesex, HA8 7DB.</p>
+</div>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var copy = (new URLSearchParams(location.search).get('c') || '').replace(/[^A-Za-z0-9-]/g, '');
+  var D = null, key = 'nc:' + copy;
+  function info(t) { $('info').hidden = false; $('terms').hidden = true; $('unlock').hidden = true; $('infoText').textContent = t; }
+  var b64 = function (s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
+  if (!window.crypto || !crypto.subtle || !window.DecompressionStream) return info('This browser cannot open the preview. Please open the link in Safari or Chrome.');
+  if (!copy) return info('This link is not complete. Please use the full link Happy Days sent you.');
+  ['contextmenu', 'copy', 'cut', 'dragstart'].forEach(function (ev) { document.addEventListener(ev, function (e) { if (!(e.target.closest && e.target.closest('input'))) e.preventDefault(); }, true); });
+
+  async function unlock(code) {
+    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']);
+    var k = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(D.s), iterations: D.n, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    var gz;
+    try { gz = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(D.i) }, k, b64(D.c)); } catch (e) { throw new Error('code'); }
+    var html = await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+    try { sessionStorage.setItem(key, code); } catch (e) {}
+    document.open(); document.write(html); document.close();
+  }
+
+  fetch('copies/' + encodeURIComponent(copy) + '.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+    if (r.status === 404) throw new Error('off');
+    if (!r.ok) throw new Error('net');
+    return r.json();
+  }).then(function (d) {
+    D = d;
+    if (d.v === 'general') { $('termsNoot').hidden = true; $('termsGeneral').hidden = false; }
+    [].forEach.call(document.querySelectorAll('.exp'), function (e) { e.textContent = d.xt; });
+    [].forEach.call(document.querySelectorAll('.copy'), function (e) { e.textContent = copy; });
+    if (Date.now() > Date.parse(d.x)) return info('This preview expired on ' + d.xt + '. Please delete any copy you hold.');
+    var saved = null; try { saved = sessionStorage.getItem(key); } catch (e) {}
+    if (saved) return unlock(saved).catch(function () { try { sessionStorage.removeItem(key); } catch (e) {} showTerms(); });
+    showTerms();
+  }).catch(function (e) {
+    info(e.message === 'off' ? 'This preview has been switched off. Please contact Happy Days.' : 'Could not load the preview. Check your connection and try again.');
+  });
+
+  function showTerms() { $('info').hidden = true; $('unlock').hidden = true; $('terms').hidden = false; }
+  function norm(s) { return s.toLowerCase().replace(/[-_.,]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+  $('show').addEventListener('change', function () { $('pw').type = this.checked ? 'text' : 'password'; });
+  $('agree').addEventListener('change', function () { $('accept').disabled = !this.checked; });
+  $('terms').addEventListener('submit', function (e) {
+    e.preventDefault(); if (!$('agree').checked) return;
+    $('terms').hidden = true; $('unlock').hidden = false; $('pw').focus();
+  });
+  $('unlock').addEventListener('submit', async function (e) {
+    e.preventDefault(); $('msg').textContent = ''; $('go').disabled = true; $('go').textContent = 'Opening...';
+    try { await unlock(norm($('pw').value)); }
+    catch (err) { $('msg').textContent = err.message === 'code' ? "That code didn't work. Please try again." : 'Could not open the preview. Please try again.'; $('go').disabled = false; $('go').textContent = 'Open the preview'; }
+  });
+})();
+</script>
+</body>
+</html>

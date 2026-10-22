@@ -1,0 +1,46 @@
+<style id="nc-mobile-patch">
+@media (max-width: 719px) {
+  header { position: static !important; }
+  #nc-mini { position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; gap: 14px;
+             padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background: #241008;
+             box-shadow: 0 6px 20px rgba(36,16,8,.25); transform: translateY(-110%); transition: transform .22s ease; }
+  html.nc-mini-on #nc-mini { transform: none; }
+}
+@media (min-width: 720px) { #nc-mini { display: none; } }
+</style>
+<script>
+(function () {
+  var de = document.documentElement, mq = window.matchMedia('(max-width: 719px)');
+  function header() { return document.querySelector('header'); }
+  function row() { var h = header(); return h && h.firstElementChild; }
+  function pick(re) { var r = row(); return r && [].slice.call(r.children).filter(function (c) { return c.tagName === 'BUTTON' && re.test(c.innerText); })[0]; }
+  function realMenu() { return pick(/Menu|Close/); }
+  function realLogo() { return pick(/central/); }
+  var mini = document.createElement('div'); mini.id = 'nc-mini'; mini.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(mini);
+  function fillMini() {
+    var m = realMenu(), l = realLogo(); mini.innerHTML = '';
+    if (m) { var mc = m.cloneNode(true); mc.setAttribute('data-nc', 'menu'); mini.appendChild(mc); }
+    if (l) { var lc = l.cloneNode(true); lc.setAttribute('data-nc', 'logo'); mini.appendChild(lc); }
+  }
+  function show(on) {
+    if (on && !de.classList.contains('nc-mini-on')) { fillMini(); mini.removeAttribute('aria-hidden'); }
+    if (!on) mini.setAttribute('aria-hidden', 'true');
+    de.classList.toggle('nc-mini-on', on);
+  }
+  document.addEventListener('click', function (e) {
+    var nc = e.target.closest && e.target.closest('#nc-mini [data-nc]'); if (!nc) return;
+    e.preventDefault(); e.stopPropagation();
+    var real = nc.getAttribute('data-nc') === 'menu' ? realMenu() : realLogo();
+    show(false); window.scrollTo(0, 0); if (real) real.click();
+  }, true);
+  var last = window.scrollY;
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY, h = header();
+    if (!mq.matches || !h || y <= h.offsetHeight) show(false);
+    else if (y < last - 6) show(true);
+    else if (y > last + 6) show(false);
+    last = y;
+  }, { passive: true });
+})();
+</script>
